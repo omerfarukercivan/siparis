@@ -27,11 +27,12 @@ public class Order {
     @Column(name = "product_id")
     private String productId;
 
-    @Column(name = "outlet_id")
-    private String outletId;
+//    @Column(name = "outlet_id")
+//    private String outletId;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-//    @OneToMany
-//    private List<Product> product;
+    @ManyToOne
+    private Outlet outlet;
 }

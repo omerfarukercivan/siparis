@@ -39,8 +39,8 @@ public class OrderService implements IOrderService {
             DtoOrder dtoOrder = new DtoOrder();
 
             order.setOrderCode(dtoOrderIU.getOrderCode());
-            order.setOutletCode(dtoOrderIU.getOutletCode());
-            order.setOutletId(outlet.getId().toString());
+//            order.setOutletCode(dtoOrderIU.getOutletCode());
+//            order.setOutletId(outlet.getId().toString()); düzelt
             order.setProductId(product.getId().toString());
             order.setQuantity(productItem.getQuantity());
             order.setStatus(OrderStatus.PENDING);

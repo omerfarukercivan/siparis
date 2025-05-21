@@ -6,23 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "product")
+@Table(name = "order_product")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class OrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
-    private Integer size;
+    @ManyToOne
+    private Product product;
 
-    @Column(name = "product_code")
-    private String productCode;
+    @ManyToOne
+    private Order order;
 
-    private String name;
-
-//    @ManyToOne
-//    private Order order;
+    @ManyToOne
+    private Outlet outlet;
 }

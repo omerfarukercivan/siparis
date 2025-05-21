@@ -29,5 +29,5 @@ public class Outlet {
     private Double latitude;
 
 //    @OneToMany
-//    private List<Order> order;
+//    private Order order;
 }
