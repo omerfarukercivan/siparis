@@ -14,9 +14,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Integer quantity;
+    private Integer id;
 
     @Column(name = "order_code")
     private String orderCode;
@@ -24,14 +22,8 @@ public class Order {
     @Column(name = "outlet_code")
     private String outletCode;
 
-    @Column(name = "product_id")
-    private String productId;
-
-//    @Column(name = "outlet_id")
-//    private String outletId;
-
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
 
     @ManyToOne
     private Outlet outlet;

@@ -9,5 +9,4 @@ class SiparisApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

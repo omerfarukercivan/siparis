@@ -14,7 +14,7 @@ public class Outlet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "outlet_code")
     private String outletCode;
@@ -27,7 +27,4 @@ public class Outlet {
     private Double longitude;
 
     private Double latitude;
-
-//    @OneToMany
-//    private Order order;
 }

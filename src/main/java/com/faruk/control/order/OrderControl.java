@@ -6,8 +6,6 @@ import com.faruk.service.order.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/rest/api/order")
 public class OrderControl implements IOrderControl {
@@ -17,7 +15,7 @@ public class OrderControl implements IOrderControl {
 
     @PostMapping(path = "/create")
     @Override
-    public List<DtoOrder> createOrder(@RequestBody DtoOrderIU dtoOrderIU) {
+    public DtoOrder createOrder(@RequestBody DtoOrderIU dtoOrderIU) {
         return orderService.createOrder(dtoOrderIU);
     }
 
@@ -29,25 +27,25 @@ public class OrderControl implements IOrderControl {
 
     @GetMapping(path = "/get-by-order")
     @Override
-    public List<DtoOrder> getOrderByOrderCode(@RequestParam(name = "orderCode") String orderCode) {
+    public DtoOrder getOrderByOrderCode(@RequestParam(name = "orderCode") String orderCode) {
         return orderService.getOrderByOrderCode(orderCode);
     }
 
     @GetMapping(path = "/get-by-outlet")
     @Override
-    public List<DtoOrder> getOrderByOutletCode(@RequestParam(name = "outletCode") String outletCode) {
+    public DtoOrder getOrderByOutletCode(@RequestParam(name = "outletCode") String outletCode) {
         return orderService.getOrderByOutletCode(outletCode);
     }
 
     @PutMapping(path = "/accept/{id}")
     @Override
-    public List<DtoOrder> orderAccept(@PathVariable(name = "id") String orderCode) {
+    public DtoOrder orderAccept(@PathVariable(name = "id") String orderCode) {
         return orderService.orderAccept(orderCode);
     }
 
     @PutMapping(path = "/reject/{id}")
     @Override
-    public List<DtoOrder> orderReject(@PathVariable(name = "id") String orderCode) {
+    public DtoOrder orderReject(@PathVariable(name = "id") String orderCode) {
         return orderService.orderReject(orderCode);
     }
 }

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class DtoProductIU {
     private Integer size;
     private String productCode;
-    private String outletCode;
     private String name;
 }

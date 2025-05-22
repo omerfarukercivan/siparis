@@ -4,6 +4,7 @@ import com.faruk.dto.order.DtoOrder;
 import com.faruk.dto.order.DtoOrderIU;
 import com.faruk.dto.order.ProductItem;
 import com.faruk.model.*;
+import com.faruk.repository.OrderProductRepository;
 import com.faruk.repository.OrderRepository;
 import com.faruk.repository.OutletRepository;
 import com.faruk.repository.ProductRepository;
@@ -27,96 +28,135 @@ public class OrderService implements IOrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
     @Override
-    public List<DtoOrder> createOrder(DtoOrderIU dtoOrderIU) {
+    public DtoOrder createOrder(DtoOrderIU dtoOrderIU) {
         List<ProductItem> productItemList = dtoOrderIU.getProducts();
         Outlet outlet = outletRepository.findByOutletCode(dtoOrderIU.getOutletCode());
-        List<DtoOrder> dtoOrderList = new ArrayList<>();
+        Order order = new Order();
+        DtoOrder dtoOrder = new DtoOrder();
+
+        order.setOrderCode(dtoOrderIU.getOrderCode());
+        order.setOutletCode(dtoOrderIU.getOutletCode());
+        order.setOutlet(outlet);
+        orderRepository.save(order);
+        BeanUtils.copyProperties(order, dtoOrder);
 
         for (ProductItem productItem : productItemList) {
             Product product = productRepository.findByProductCode(productItem.getProductCode());
-            Order order = new Order();
-            DtoOrder dtoOrder = new DtoOrder();
+            OrderProduct orderProduct = new OrderProduct();
 
-            order.setOrderCode(dtoOrderIU.getOrderCode());
-//            order.setOutletCode(dtoOrderIU.getOutletCode());
-//            order.setOutletId(outlet.getId().toString()); düzelt
-            order.setProductId(product.getId().toString());
-            order.setQuantity(productItem.getQuantity());
-            order.setStatus(OrderStatus.PENDING);
+            orderProduct.setOrder(order);
+            orderProduct.setOutlet(outlet);
+            orderProduct.setProduct(product);
+            orderProduct.setQuentity(productItem.getQuantity());
 
-            orderRepository.save(order);
-
-            BeanUtils.copyProperties(order, dtoOrder);
-            dtoOrderList.add(dtoOrder);
+            orderProductRepository.save(orderProduct);
+            dtoOrder.setProducts(productItemList);
         }
-        return dtoOrderList;
+        return dtoOrder;
     }
 
     @Override
     public void deleteOrder(Integer id) {
-        Optional<Order> optional = orderRepository.findById(id);
-        if (optional.isPresent()) {
-            orderRepository.delete(optional.get());
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+
+        if (optionalOrder.isPresent()) {
+            try {
+                orderProductRepository.deleteByOrderId(optionalOrder.get().getId());
+                orderRepository.delete(optionalOrder.get());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     @Override
-    public List<DtoOrder> getOrderByOrderCode(String orderCode) {
-        List<Order> orderList = orderRepository.findByOrderCode(orderCode);
-        List<DtoOrder> dtoOrderList = new ArrayList<>();
+    public DtoOrder getOrderByOrderCode(String orderCode) {
+        Order order=orderRepository.findByOrderCode(orderCode);
+        List<OrderProduct> orderProductList=orderProductRepository.findByOrderId(order.getId());
+        DtoOrder dtoOrder=new DtoOrder();
+        ProductItem productItem=new ProductItem();
+        List<ProductItem> productItemList=new ArrayList<>();
 
-        for (Order order : orderList) {
-            DtoOrder dtoOrder = new DtoOrder();
-            BeanUtils.copyProperties(order, dtoOrder);
-            dtoOrderList.add(dtoOrder);
+        BeanUtils.copyProperties(order,dtoOrder);
+
+        for (OrderProduct orderProduct: orderProductList){
+            productItem.setProductCode(orderProduct.getProduct().getProductCode());
+            productItem.setQuantity(orderProduct.getQuentity());
+            productItemList.add(productItem);
+            System.out.println("dtoOrder: "+productItem);
         }
-        return dtoOrderList;
+        dtoOrder.setProducts(productItemList);
+
+        return dtoOrder;
     }
 
     @Override
-    public List<DtoOrder> getOrderByOutletCode(String outletCode) {
+    public DtoOrder getOrderByOutletCode(String outletCode) {
         Outlet outlet = outletRepository.findByOutletCode(outletCode);
-        List<Order> orderList = orderRepository.findByOutletCode(outlet.getOutletCode());
-        List<DtoOrder> dtoOrderList = new ArrayList<>();
+        Order order = orderRepository.findByOutletCode(outlet.getOutletCode());
+        List<OrderProduct> orderProductList=orderProductRepository.findByOrderId(order.getId());
+        DtoOrder dtoOrder=new DtoOrder();
+        ProductItem productItem=new ProductItem();
+        List<ProductItem> productItemList=new ArrayList<>();
 
-        for (Order order : orderList) {
-            DtoOrder dtoOrder = new DtoOrder();
-            BeanUtils.copyProperties(order, dtoOrder);
-            dtoOrderList.add(dtoOrder);
+        BeanUtils.copyProperties(order,dtoOrder);
+
+        for (OrderProduct orderProduct : orderProductList) {
+            productItem.setProductCode(orderProduct.getProduct().getProductCode());
+            productItem.setQuantity(orderProduct.getQuentity());
+            productItemList.add(productItem);
+            System.out.println("dtoOrder: "+productItem);
         }
-        return dtoOrderList;
+        dtoOrder.setProducts(productItemList);
+
+        return dtoOrder;
     }
 
     @Override
-    public List<DtoOrder> orderAccept(String orderCode) {
-        List<Order> orderList = orderRepository.findByOrderCode(orderCode);
-        List<DtoOrder> dtoOrderList=new ArrayList<>();
+    public DtoOrder orderAccept(String orderCode) {
+        Order order=orderRepository.findByOrderCode(orderCode);
+        order.setStatus(OrderStatus.ACCEPTED);
+        List<OrderProduct> orderProductList=orderProductRepository.findByOrderId(order.getId());
+        DtoOrder dtoOrder=new DtoOrder();
+        ProductItem productItem=new ProductItem();
+        List<ProductItem> productItemList=new ArrayList<>();
 
-        for (Order order : orderList) {
-            DtoOrder dtoOrder = new DtoOrder();
+        BeanUtils.copyProperties(order,dtoOrder);
 
-            order.setStatus(OrderStatus.ACCEPTED);
-            orderRepository.save(order);
-            BeanUtils.copyProperties(order, dtoOrder);
-            dtoOrderList.add(dtoOrder);
+        for (OrderProduct orderProduct: orderProductList){
+            productItem.setProductCode(orderProduct.getProduct().getProductCode());
+            productItem.setQuantity(orderProduct.getQuentity());
+            productItemList.add(productItem);
+            System.out.println("dtoOrder: "+productItem);
         }
-        return dtoOrderList;
+        dtoOrder.setProducts(productItemList);
+
+        return dtoOrder;
     }
 
     @Override
-    public List<DtoOrder> orderReject(String orderCode) {
-        List<Order> orderList = orderRepository.findByOrderCode(orderCode);
-        List<DtoOrder> dtoOrderList=new ArrayList<>();
+    public DtoOrder orderReject(String orderCode) {
+        Order order=orderRepository.findByOrderCode(orderCode);
+        order.setStatus(OrderStatus.REJECTED);
+        List<OrderProduct> orderProductList=orderProductRepository.findByOrderId(order.getId());
+        DtoOrder dtoOrder=new DtoOrder();
+        ProductItem productItem=new ProductItem();
+        List<ProductItem> productItemList=new ArrayList<>();
 
-        for (Order order : orderList) {
-            DtoOrder dtoOrder = new DtoOrder();
+        BeanUtils.copyProperties(order,dtoOrder);
 
-            order.setStatus(OrderStatus.REJECTED);
-            orderRepository.save(order);
-            BeanUtils.copyProperties(order, dtoOrder);
-            dtoOrderList.add(dtoOrder);
+        for (OrderProduct orderProduct: orderProductList){
+            productItem.setProductCode(orderProduct.getProduct().getProductCode());
+            productItem.setQuantity(orderProduct.getQuentity());
+            productItemList.add(productItem);
+            System.out.println("dtoOrder: "+productItem);
         }
-        return dtoOrderList;
+        dtoOrder.setProducts(productItemList);
+
+        return dtoOrder;
     }
 }

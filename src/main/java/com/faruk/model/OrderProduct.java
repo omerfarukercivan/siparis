@@ -14,7 +14,7 @@ public class OrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Integer Id;
 
     @ManyToOne
     private Product product;
@@ -24,4 +24,6 @@ public class OrderProduct {
 
     @ManyToOne
     private Outlet outlet;
+
+    private Integer quentity;
 }

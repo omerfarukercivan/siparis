@@ -14,7 +14,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private Integer size;
 
@@ -22,7 +22,4 @@ public class Product {
     private String productCode;
 
     private String name;
-
-//    @ManyToOne
-//    private Order order;
 }
