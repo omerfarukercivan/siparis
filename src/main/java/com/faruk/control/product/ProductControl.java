@@ -1,5 +1,7 @@
 package com.faruk.control.product;
 
+import com.faruk.control.BaseControl;
+import com.faruk.control.RootEntity;
 import com.faruk.dto.product.DtoProduct;
 import com.faruk.dto.product.DtoProductIU;
 import com.faruk.service.product.IProductService;
@@ -10,20 +12,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/api/product")
-public class ProductControl implements IProductControl {
+public class ProductControl extends BaseControl implements IProductControl {
 
     @Autowired
     private IProductService productService;
 
-    @PostMapping(path = "/save")
+    @PostMapping("/save")
     @Override
-    public DtoProduct saveProduct(@RequestBody DtoProductIU dtoProductIU) {
-        return productService.saveProduct(dtoProductIU);
+    public RootEntity<DtoProduct> saveProduct(@RequestBody DtoProductIU dtoProductIU) {
+        return ok(productService.saveProduct(dtoProductIU));
     }
 
-    @GetMapping(path = "/list")
+    @GetMapping("/list")
     @Override
-    public List<DtoProduct> getAllProduct() {
-        return productService.getAllProduct();
+    public RootEntity<List<DtoProduct>> getAllProduct() {
+        return ok(productService.getAllProduct());
     }
 }

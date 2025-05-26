@@ -1,51 +1,61 @@
 package com.faruk.control.order;
 
+import com.faruk.control.BaseControl;
+import com.faruk.control.RootEntity;
 import com.faruk.dto.order.DtoOrder;
 import com.faruk.dto.order.DtoOrderIU;
 import com.faruk.service.order.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/rest/api/order")
-public class OrderControl implements IOrderControl {
+public class OrderControl extends BaseControl implements IOrderControl {
 
     @Autowired
     private IOrderService orderService;
 
-    @PostMapping(path = "/create")
+    @PostMapping("/create")
     @Override
-    public DtoOrder createOrder(@RequestBody DtoOrderIU dtoOrderIU) {
-        return orderService.createOrder(dtoOrderIU);
+    public RootEntity<DtoOrder> createOrder(@RequestBody DtoOrderIU dtoOrderIU) {
+        return ok(orderService.createOrder(dtoOrderIU));
     }
 
-    @DeleteMapping(path = "/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @Override
-    public void deleteOrder(@PathVariable(name = "id") Integer id) {
-        orderService.deleteOrder(id);
+    public void deleteOrder(@PathVariable(name = "id") String orderCode) {
+        orderService.deleteOrder(orderCode);
     }
 
-    @GetMapping(path = "/get-by-order")
+    @GetMapping("/get-by-order")
     @Override
-    public DtoOrder getOrderByOrderCode(@RequestParam(name = "orderCode") String orderCode) {
-        return orderService.getOrderByOrderCode(orderCode);
+    public RootEntity<DtoOrder> getOrderByOrderCode(@RequestParam(name = "orderCode") String orderCode) {
+        return ok(orderService.getOrderByOrderCode(orderCode));
     }
 
-    @GetMapping(path = "/get-by-outlet")
+    @GetMapping("/get-by-outlet")
     @Override
-    public DtoOrder getOrderByOutletCode(@RequestParam(name = "outletCode") String outletCode) {
-        return orderService.getOrderByOutletCode(outletCode);
+    public RootEntity<DtoOrder> getOrderByOutletCode(@RequestParam(name = "outletCode") String outletCode) {
+        return ok(orderService.getOrderByOutletCode(outletCode));
     }
 
-    @PutMapping(path = "/accept/{id}")
+    @PutMapping("/accept/{id}")
     @Override
-    public DtoOrder orderAccept(@PathVariable(name = "id") String orderCode) {
-        return orderService.orderAccept(orderCode);
+    public RootEntity<DtoOrder> orderAccept(@PathVariable(name = "id") String orderCode) {
+        return ok(orderService.orderAccept(orderCode));
     }
 
-    @PutMapping(path = "/reject/{id}")
+    @PutMapping("/reject/{id}")
     @Override
-    public DtoOrder orderReject(@PathVariable(name = "id") String orderCode) {
-        return orderService.orderReject(orderCode);
+    public RootEntity<DtoOrder> orderReject(@PathVariable(name = "id") String orderCode) {
+        return ok(orderService.orderReject(orderCode));
+    }
+
+    @GetMapping("/list")
+    @Override
+    public RootEntity<List<DtoOrder>> getAllOrder() {
+        return ok(orderService.getAllOrder());
     }
 }

@@ -1,5 +1,7 @@
 package com.faruk.control.outlet;
 
+import com.faruk.control.BaseControl;
+import com.faruk.control.RootEntity;
 import com.faruk.dto.outlet.DtoOutlet;
 import com.faruk.dto.outlet.DtoOutletIU;
 import com.faruk.service.outlet.IOutletService;
@@ -10,20 +12,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/api/outlet")
-public class OutletControl implements IOutletControl{
+public class OutletControl extends BaseControl implements IOutletControl {
 
     @Autowired
     private IOutletService outletService;
 
-    @PostMapping(path = "/save")
+    @PostMapping("/save")
     @Override
-    public DtoOutlet saveOutlet(@RequestBody DtoOutletIU dtoOutletIU) {
-        return outletService.saveOutlet(dtoOutletIU);
+    public RootEntity<DtoOutlet> saveOutlet(@RequestBody DtoOutletIU dtoOutletIU) {
+        return ok(outletService.saveOutlet(dtoOutletIU));
     }
 
-    @GetMapping(path = "/list")
+    @GetMapping("/list")
     @Override
-    public List<DtoOutlet> getAllOutlet() {
-        return outletService.getAllOutlet();
+    public RootEntity<List<DtoOutlet>> getAllOutlet() {
+        return ok(outletService.getAllOutlet());
     }
 }
