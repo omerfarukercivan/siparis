@@ -41,15 +41,15 @@ public class OrderControl extends BaseControl implements IOrderControl {
         return ok(orderService.getOrderByOutletCode(outletCode));
     }
 
-    @PutMapping("/accept/{id}")
+    @PutMapping("/accept/{orderCode}")
     @Override
-    public RootEntity<DtoOrder> orderAccept(@PathVariable(name = "id") String orderCode) {
+    public RootEntity<DtoOrder> orderAccept(@PathVariable(name = "orderCode") String orderCode) {
         return ok(orderService.orderAccept(orderCode));
     }
 
-    @PutMapping("/reject/{id}")
+    @PutMapping("/reject/{orderCode}")
     @Override
-    public RootEntity<DtoOrder> orderReject(@PathVariable(name = "id") String orderCode) {
+    public RootEntity<DtoOrder> orderReject(@PathVariable(name = "orderCode") String orderCode) {
         return ok(orderService.orderReject(orderCode));
     }
 

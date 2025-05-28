@@ -188,15 +188,15 @@ public class OrderService implements IOrderService {
     }
 
     private void checkIfOrderAlreadyExistsForOutlet(DtoOrderIU dtoOrderIU) {
-        Optional<Order> optionalOrder=orderRepository.findByOrderCodeAndOutletCode(dtoOrderIU.getOrderCode(), dtoOrderIU.getOutletCode());
+        Optional<Order> optionalOrder = orderRepository.findByOrderCodeAndOutletCode(dtoOrderIU.getOrderCode(), dtoOrderIU.getOutletCode());
 
         String errorMessage = String.format(
-                "%s kodlu bayi'nin %s kodlu siparişi bulunmaktadır.",
+                "%s kodlu bayinin %s kodlu siparişi bulunmaktadır.",
                 dtoOrderIU.getOutletCode(),
                 dtoOrderIU.getOrderCode()
         );
 
-        if (optionalOrder.isPresent()){
+        if (optionalOrder.isPresent()) {
             throw new BaseException(new ErrorMessage(MessageType.ORDER_ALREADY_EXIST, errorMessage));
         }
     }
@@ -207,7 +207,7 @@ public class OrderService implements IOrderService {
 
             if (item.getQuantity() > product.getSize()) {
                 String errorMessage = String.format(
-                        "Talep edilen miktar %d '%s' ürünü için mevcut stok miktarını %d aşıyor.",
+                        "Talep edilen miktar (%d) '%s' ürünü için mevcut stok miktarını (%d) aşıyor.",
                         item.getQuantity(),
                         product.getName(),
                         product.getSize()
